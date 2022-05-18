@@ -1,0 +1,10 @@
+﻿@{
+    ViewData["Title"] = "Entity framework example";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Here a database with refreshable age of user:</p> 
+@foreach (User item in Model)
+{
+    <div>@item.ToString()</div>
+}
