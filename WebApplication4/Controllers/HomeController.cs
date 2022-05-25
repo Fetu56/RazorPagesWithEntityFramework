@@ -7,10 +7,11 @@ namespace WebApplication4.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        public IConfiguration Configuration { get; }
+        public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
         {
             _logger = logger;
+            Configuration = configuration;
         }
 
         public IActionResult Index()
@@ -20,29 +21,30 @@ namespace WebApplication4.Controllers
 
         public IActionResult Entity()
         {
-            //using (ApplicationContext db = new ApplicationContext())
-            //{
-            //    
-            //    User user1 = new User { UserName = "Tom", Age = 33, Password = "b123" };
-            //    User user2 = new User { UserName = "Alice", Age = 26, Password = "b123" };
-            //    
-            //    db.Users.AddRange(user1, user2);
-            //    db.SaveChanges();
-            //}
-            List<User> users = new List<User>();
-            using (ApplicationContext db = new ApplicationContext())
+            using (ApplicationContext db = new ApplicationContext(Configuration))
             {
-                db.Users.ToList().ForEach(x => x.Age++);
+                db.Products.Add(new Product() {  Description = "desc", Category = new Category() { Name = "lol"}, Cost = 5, ProductName = "lkoasf" });
                 db.SaveChanges();
-                users = db.Users.ToList();
+                ViewBag.Product = db.Products.ToList();
+                ViewBag.Category = db.Categories.ToList();
             }
-            return View(users);
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult OnGetReset()
+        {
+            using (ApplicationContext db = new ApplicationContext(Configuration))
+            {
+                db.Products.ToList().Clear();
+                db.SaveChanges();
+            }
+            return RedirectToPage("Entity");
         }
     }
 }

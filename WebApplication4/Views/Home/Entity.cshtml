@@ -3,8 +3,16 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-<p>Here a database with refreshable age of user:</p> 
-@foreach (User item in Model)
+<p>Here a product:</p> 
+@foreach (var item in ViewBag.Product)
 {
     <div>@item.ToString()</div>
 }
+<br /><p>Here a category:</p> 
+@foreach (var item in ViewBag.Category)
+{
+    <div>@item.ToString()</div>
+}
+<br />
+
+<a asp-page-handler="Reset">Reset Products</a>

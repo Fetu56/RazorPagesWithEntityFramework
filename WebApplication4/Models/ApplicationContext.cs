@@ -1,17 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer;
 
 namespace WebApplication4.Models
 {
     public class ApplicationContext : DbContext
     {
-        public DbSet<User> Users { get; set; } = null!;
-
-        public ApplicationContext() => Database.EnsureCreated();
+        public DbSet<Product> Products { get; set; } = null!;
+        public DbSet<Category> Categories { get; set; } = null!;
+        IConfiguration configuration;
+        public ApplicationContext(IConfiguration conf) { 
+            configuration = conf;
+            Database.EnsureCreated();
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseSqlServer("Data Source=database-2.clarxrpnfllk.eu-central-1.rds.amazonaws.com;Database=main;User Id=admin;Password=NONE");
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("MSSQL"));
         }
     }
 }
